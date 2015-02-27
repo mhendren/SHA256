@@ -1,0 +1,2 @@
+node_modules/*
+# I am intentionally not ignoring my IntelliJ files.
