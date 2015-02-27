@@ -3,7 +3,7 @@
  */
 var NewtonMethod = require('./NewtonMethod');
 
-var RootFinders = {
+module.exports = {
     sqroot: function (n) {
         var nm = new NewtonMethod(function (x) {
             return (x * x) - n;
@@ -21,4 +21,3 @@ var RootFinders = {
         return nm.run(1);
     }
 };
-module.exports = RootFinders;

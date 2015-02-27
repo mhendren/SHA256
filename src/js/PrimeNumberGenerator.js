@@ -4,10 +4,7 @@
 module.exports = function(max) {
     if (max < 1) return [];
 
-    function PNG(bs, prev) {
-        var base = bs;
-        var previous = prev;
-
+    function PNG(base, previous) {
         function getNext() {
             function iter(n) {
                 function gcd(a, b) {
@@ -26,20 +23,25 @@ module.exports = function(max) {
             return iter(1);
         }
 
+        function next() {
+            var n = getNext();
+            return new PNG(n, previous.concat(n))
+        }
+
+        function advance(count, png) {
+            return count == 0 ? png : advance(count - 1, png.next())
+        }
+
         return {
             list: function () {
                 return previous.concat(getNext());
             },
-            next: function () {
-                var n = getNext();
-                return new PNG(n, previous.concat(n));
+            next: function() { return next(); },
+            advance: function(count) {
+                return advance(count, this);
             }
         };
     }
 
-    var png = new PNG(1, []);
-    for (var i = 1; i < max; i++) {
-        png = png.next();
-    }
-    return png.list();
+    return new PNG(1, []).advance(max - 1).list();
 };

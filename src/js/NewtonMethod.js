@@ -1,7 +1,7 @@
 /**
  * Created by mhendren on 2/26/15.
  */
-function NewtonMethod(fn, fnprime, maxIter, tol) {
+module.exports = function(fn, fnprime, maxIter, tol) {
     if (typeof fn === "undefined") {
         throw new Error("fn must be defined");
     }
@@ -34,4 +34,3 @@ function NewtonMethod(fn, fnprime, maxIter, tol) {
         }
     };
 };
-module.exports = NewtonMethod;
