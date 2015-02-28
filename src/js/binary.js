@@ -92,5 +92,12 @@ module.exports = {
                 [bit(ba1[pos], ba2[pos], carry)].concat(out));
         }
         return iter(ba1.length, 0, []);
+    },
+
+    WORD: function(base, pos) {
+        var start = pos * 32;
+        var end = start + 32;
+        if (end > base.length) throw new Error('data is not large enough to contain word ' + pos + ' (' + base.length + ')');
+        return base.slice(start, end);
     }
 };

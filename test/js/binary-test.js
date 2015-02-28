@@ -74,5 +74,42 @@ describe('binary', function () {
             expect(binary.ADD([0, 1, 1, 0, 0, 1, 0, 0], [0, 0, 1, 1, 0, 0, 1, 0]))
                 .to.deep.equal([1, 0, 0, 1, 0, 1, 1, 0]);
         });
+        it('should throw an exception if the bit arrays are unequal length', function() {
+            function badADD() {
+                binary.ADD([1, 1, 0, 1, 0], [0, 0, 1, 0]);
+            }
+            expect(badADD).to.throw('binary arrays are not the same length (5, 4)');
+        });
+    });
+
+    describe('WORD', function() {
+        var base = null;
+        beforeEach(function() {
+            base = [
+                0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1,
+                0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+                1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0,
+                0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0,
+                1, 1, 1, 1, 1
+            ];
+        });
+        it('should get [0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1] for WORD(0)', function() {
+            expect(binary.WORD(base, 0)).to.deep.equal([0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 1]);
+        });
+        it('should get [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0] for WORD(1)', function() {
+            expect(binary.WORD(base, 1)).to.deep.equal([0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0]);
+        });
+        it('should get [1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0] for WORD(2)', function() {
+            expect(binary.WORD(base, 2)).to.deep.equal([1, 0, 1, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0]);
+        });
+        it('should get [0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0] for WORD(3)', function() {
+            expect(binary.WORD(base, 3)).to.deep.equal([0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0]);
+        });
+        it('should get an exception for word(4)', function() {
+            function badWORD() {
+                binary.WORD(base, 4);
+            }
+            expect(badWORD).to.throw('data is not large enough to contain word 4 (133)');
+        });
     });
 });
