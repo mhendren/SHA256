@@ -74,5 +74,23 @@ module.exports = {
         }
 
         return iter([], ba1.length);
+    },
+
+    ADD: function (ba1, ba2) {
+        if (ba1.length != ba2.length)
+            throw new Error('binary arrays are not the same length (' + ba1.length + ', ' + ba2.length + ')');
+        function iter(depth, carry, out) {
+            function bit(b0, b1, c) {
+                var on = ((b0 && !b1) || (!b0 && b1)) ? 1 : 0;
+                return ((on && !c) || (!on && c)) ? 1 : 0;
+            }
+            function carr(b0, b1, c) {
+                return ((b0 && b1) || (b0 && c) || (b1 && c)) ? 1 : 0;
+            }
+            var pos = depth - 1;
+            return depth == 0 ? out : iter(depth - 1, carr(ba1[pos], ba2[pos], carry),
+                [bit(ba1[pos], ba2[pos], carry)].concat(out));
+        }
+        return iter(ba1.length, 0, []);
     }
 };

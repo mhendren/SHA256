@@ -62,4 +62,17 @@ describe('binary', function () {
             expect(binary.XOR([1, 0, 0, 1], [1, 0, 1, 1])).to.deep.equal([0, 0, 1, 0]);
         });
     });
+
+    describe('ADD', function() {
+        it('should get 0010 for 1001 ADD 1001', function() {
+            expect(binary.ADD([1, 0, 0, 1], [1, 0, 0, 1])).to.deep.equal([0, 0, 1, 0]);
+        });
+        it('should get 1010 for 0101 ADD 0101', function() {
+            expect(binary.ADD([0, 1, 0, 1], [0, 1, 0, 1])).to.deep.equal([1, 0, 1, 0]);
+        });
+        it('should get 10010110 for 01100100 ADD 00110010', function() {
+            expect(binary.ADD([0, 1, 1, 0, 0, 1, 0, 0], [0, 0, 1, 1, 0, 0, 1, 0]))
+                .to.deep.equal([1, 0, 0, 1, 0, 1, 1, 0]);
+        });
+    });
 });

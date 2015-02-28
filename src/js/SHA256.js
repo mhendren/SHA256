@@ -8,7 +8,7 @@ var RootFinders = require('./RootFinders');
 
 
 module.exports = function(message) {
-    if (message.length % 512) throw new Error('Message must be evenly divisible by 512 bits');
+    if (message.length % 512) throw new Error('Message must be evenly divisible by 512 bits (' + message.length + ')');
 
     var h0 = map(map(map(map(PrimeNumberGenerator(8), RootFinders.sqroot), binary.fractionalToBinaryString), binary.binaryStringToHex), binary.hexToBinary);
     var k0 = map(map(map(map(PrimeNumberGenerator(64), RootFinders.cuberoot), binary.fractionalToBinaryString), binary.binaryStringToHex), binary.hexToBinary);
