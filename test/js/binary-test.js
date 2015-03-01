@@ -27,6 +27,21 @@ describe('binary', function () {
         })
     });
 
+    describe('toHex', function() {
+        it('should throw an exception for a bit array that is not a multiple of 4', function() {
+            function badToHex() {
+                binary.toHex([1, 0, 1, 0, 1, 0]);
+            }
+            expect(badToHex).to.throw('number of bits in array is not divisible by 4');
+        });
+        it('should get a5 for 10100101', function() {
+            expect(binary.toHex([1, 0, 1, 0, 0, 1, 0, 1])).to.equal("a5");
+        });
+        it('should get c7 for 11000111', function() {
+            expect(binary.toHex([1, 1, 0, 0, 0, 1, 1, 1])).to.equal('c7');
+        })
+    });
+
     describe('ROR', function () {
         it('should make 10101, 1 be 11010', function () {
             expect(binary.ROR([1, 0, 1, 0, 1])).to.deep.equal([1, 1, 0, 1, 0]);
@@ -79,6 +94,18 @@ describe('binary', function () {
                 binary.ADD([1, 1, 0, 1, 0], [0, 0, 1, 0]);
             }
             expect(badADD).to.throw('binary arrays are not the same length (5, 4)');
+        });
+    });
+
+    describe('NOT', function() {
+        it('should get 11 for 00', function() {
+            expect(binary.NOT([0, 0])).to.deep.equal([1, 1]);
+        });
+        it('should get 00 for 11', function() {
+            expect(binary.NOT([1, 1])).to.deep.equal([0, 0]);
+        });
+        it('should get 10101 for 01010', function() {
+            expect(binary.NOT([0, 1, 0, 1, 0])).to.deep.equal([1, 0, 1, 0, 1]);
         });
     });
 

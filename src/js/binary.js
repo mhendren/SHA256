@@ -38,6 +38,16 @@ module.exports = {
         return iter(value, value.length, []);
     },
 
+    toHex: function(ba) {
+        if (ba.length % 4 != 0) throw new Error('number of bits in array is not divisible by 4');
+        var alphabet = '0123456789abcdef';
+        function iter(b, out) {
+            var c = b.slice(0, 4);
+            return b.length == 0 ? out : iter(b.slice(4), out.concat(alphabet[c[0] * 8 + c[1] * 4 + c[2] * 2 + c[3]]));
+        }
+        return iter(ba, '');
+    },
+
     ROR: function (value, amount) {
         function iter(val, amt) {
             var len = value.length - 1;
@@ -92,6 +102,13 @@ module.exports = {
                 [bit(ba1[pos], ba2[pos], carry)].concat(out));
         }
         return iter(ba1.length, 0, []);
+    },
+
+    NOT: function(ba) {
+        function iter(depth, out) {
+            return depth == 0 ? out : iter(depth - 1, out.concat(ba[ba.length - depth] == 1 ? 0 : 1));
+        }
+        return iter(ba.length, []);
     },
 
     WORD: function(base, pos) {
