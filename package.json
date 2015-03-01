@@ -5,10 +5,15 @@
   "scripts": {
     "start": "node ./bin/www"
   },
-  "dependencies": {},
+  "dependencies": {
+    "gulp": "~3.8.11"
+  },
   "devDependencies": {
     "chai": "~2.1.0",
     "mocha": "~2.1.0",
-    "debug": "~2.1.1"
+    "debug": "~2.1.1",
+    "gulp": "~3.8.11",
+    "gulp-mocha": "~2.0.0",
+    "gulp-mocha-co": "~0.4.1-co.3"
   }
 }
