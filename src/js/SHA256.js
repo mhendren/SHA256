@@ -12,7 +12,7 @@ module.exports = function(message) {
     var h0 = map(map(map(map(PrimeNumberGenerator(8), RootFinders.sqroot), binary.fractionalToBinaryString), binary.binaryStringToHex), binary.hexToBinary);
     var k = map(map(map(map(PrimeNumberGenerator(64), RootFinders.cuberoot), binary.fractionalToBinaryString), binary.binaryStringToHex), binary.hexToBinary);
 
-    function iter(msg, h, k) {
+    function iter(msg, h) {
         function schedule(depth, wi) {
             var n = 48 - depth;
             var s0 = binary.XOR(binary.XOR(binary.ROR(binary.WORD(wi, n + 1), 7), binary.ROR(binary.WORD(wi, n + 1), 18)), binary.SHR(binary.WORD(wi, n + 1), 3));
@@ -64,5 +64,5 @@ module.exports = function(message) {
             a0, b0, c0, d0, e0, f0, g0, j0));
     }
 
-    return binary.toHex(iter(message, h0, k));
+    return binary.toHex(iter(message, h0));
 };
