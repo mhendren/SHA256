@@ -51,6 +51,18 @@ describe('binary', function () {
         });
     });
 
+    describe('SHR', function() {
+        it('should get 00 for 11, 2', function() {
+            expect(binary.SHR([1, 1], 2)).to.deep.equal([0, 0]);
+        });
+        it('should get 000 for 101, 5', function() {
+            expect(binary.SHR([1, 0, 1], 5)).to.deep.equal([0, 0, 0]);
+        });
+        it('should get 000101001 for 101001010, 3', function() {
+            expect(binary.SHR([1, 0, 1, 0, 0, 1, 0, 1, 0], 3)).to.deep.equal([0, 0, 0, 1, 0, 1, 0, 0, 1]);
+        });
+    });
+
     describe('AND', function () {
         it('should get 1001 with 1101 AND 1011', function () {
             expect(binary.AND([1, 1, 0, 1], [1, 0, 1, 1])).to.deep.equal([1, 0, 0, 1]);

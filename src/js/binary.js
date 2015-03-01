@@ -57,6 +57,13 @@ module.exports = {
         return iter(value, typeof amount === "undefined" ? 1 : amount);
     },
 
+    SHR: function(ba, amount) {
+        function iter(b, depth, out) {
+            return depth <= 0 ? out : iter(b.slice(1), depth - 1, out.concat(b[0]));
+        }
+        return iter(ba, ba.length - amount, map(new Array(amount < ba.length ? amount : ba.length), function() { return 0;}));
+    },
+
     AND: function (ba1, ba2) {
         function iter(val, depth) {
             var pos = ba1.length - depth;
