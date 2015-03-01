@@ -2,6 +2,7 @@
  * Created by mhendren on 2/27/2015.
  */
 var map = require('./map');
+var SHA256 = require('./SHA256');
 function Message(message) {
     function zeroPad(n, w) {
         return n.length >= w ? n : new Array(w - n.length + 1).join('0') + n;
@@ -46,6 +47,10 @@ function Message(message) {
         toBinary: function() {
             var binMessage = toBinary();
             return appendLength(pad(binMessage), binMessage.length);
+        },
+        hash: function() {
+            var binMessage = toBinary();
+            return SHA256(appendLength(pad(binMessage), binMessage.length));
         }
     };
 }

@@ -76,4 +76,10 @@ describe('Message', function () {
                     0, 0, 1, 0, 1, 0, 0, 0]);
             });
     });
+
+    describe('hash', function() {
+        it('should get d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592 for "The quick brown fox jumps over the lazy dog"', function() {
+            expect((new Message("The quick brown fox jumps over the lazy dog")).hash()).to.equal("d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592")
+        })
+    })
 });
