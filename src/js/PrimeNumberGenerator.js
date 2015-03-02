@@ -2,8 +2,6 @@
  * Created by mhendren on 2/26/15.
  */
 module.exports = function(max) {
-    if (max < 1) return [];
-
     function PNG(base, previous) {
         function getNext() {
             function iter(n) {
@@ -42,6 +40,6 @@ module.exports = function(max) {
             }
         };
     }
-
+    if (max < 1) return [];
     return new PNG(1, []).advance(max - 1).list();
 };

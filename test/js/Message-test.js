@@ -18,7 +18,7 @@ describe('Message', function () {
     });
 
     describe('add/get', function () {
-        it("should get 'hello, world when ', world' is added to 'hello'", function () {
+        it("should get 'hello, world' when ', world' is added to 'hello'", function () {
             expect(new Message("hello").add(", world").get()).to.equal("hello, world");
         });
     });
