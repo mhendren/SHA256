@@ -4,6 +4,13 @@
 var map = require('./map');
 var compose = require('./compose');
 var binary = require('./binary');
+var AND = binary.AND;
+var ADD = binary.ADD;
+var ROR = binary.ROR;
+var SHR = binary.SHR;
+var XOR = binary.XOR;
+var NOT = binary.NOT;
+var WORD = binary.WORD;
 var PrimeNumberGenerator = require('./PrimeNumberGenerator');
 var RootFinders = require('./RootFinders');
 
@@ -16,9 +23,9 @@ module.exports = function(message) {
     function iter(msg, h) {
         function schedule(depth, wi) {
             var n = 48 - depth;
-            var s0 = binary.XOR(binary.XOR(binary.ROR(binary.WORD(wi, n + 1), 7), binary.ROR(binary.WORD(wi, n + 1), 18)), binary.SHR(binary.WORD(wi, n + 1), 3));
-            var s1 = binary.XOR(binary.XOR(binary.ROR(binary.WORD(wi, n + 14), 17), binary.ROR(binary.WORD(wi, n + 14), 19)), binary.SHR(binary.WORD(wi, n + 14), 10));
-            return depth == 0 ? wi : schedule(depth - 1, wi.concat(binary.ADD(binary.ADD(binary.ADD(binary.WORD(wi, n), s0), binary.WORD(wi, n + 9)), s1)));
+            var s0 = XOR(XOR(ROR(WORD(wi, n + 1), 7), ROR(WORD(wi, n + 1), 18)), SHR(WORD(wi, n + 1), 3));
+            var s1 = XOR(XOR(ROR(WORD(wi, n + 14), 17), ROR(WORD(wi, n + 14), 19)), SHR(WORD(wi, n + 14), 10));
+            return depth == 0 ? wi : schedule(depth - 1, wi.concat(ADD(ADD(ADD(WORD(wi, n), s0), WORD(wi, n + 9)), s1)));
         }
 
         var a0 = binary.WORD(h, 0);
@@ -35,30 +42,30 @@ module.exports = function(message) {
             var pos = maxDepth - depth;
 
             function genTemp1() {
-                var s1 = binary.XOR(binary.XOR(binary.ROR(e, 6), binary.ROR(e, 11)), binary.ROR(e, 25));
-                var ch = binary.XOR(binary.AND(e, f), binary.AND(binary.NOT(e), g));
-                return binary.ADD(j, binary.ADD(s1, binary.ADD(ch, binary.ADD(binary.WORD(k, pos), binary.WORD(w, pos)))));
+                var s1 = XOR(XOR(ROR(e, 6), ROR(e, 11)), ROR(e, 25));
+                var ch = XOR(AND(e, f), AND(NOT(e), g));
+                return ADD(j, ADD(s1, ADD(ch, ADD(WORD(k, pos), WORD(w, pos)))));
             }
 
             function genTemp2() {
-                var s0 = binary.XOR(binary.ROR(a, 2), binary.XOR(binary.ROR(a, 13), binary.ROR(a, 22)));
-                var maj = binary.XOR(binary.AND(a, b), binary.XOR(binary.AND(a, c), binary.AND(b, c)));
+                var s0 = XOR(ROR(a, 2), XOR(ROR(a, 13), ROR(a, 22)));
+                var maj = XOR(AND(a, b), XOR(AND(a, c), AND(b, c)));
                 return binary.ADD(s0, maj);
             }
 
             function genHash() {
-                return binary.ADD(binary.WORD(h, 0), a)
-                    .concat(binary.ADD(binary.WORD(h, 1), b))
-                    .concat(binary.ADD(binary.WORD(h, 2), c))
-                    .concat(binary.ADD(binary.WORD(h, 3), d))
-                    .concat(binary.ADD(binary.WORD(h, 4), e))
-                    .concat(binary.ADD(binary.WORD(h, 5), f))
-                    .concat(binary.ADD(binary.WORD(h, 6), g))
-                    .concat(binary.ADD(binary.WORD(h, 7), j));
+                return ADD(WORD(h, 0), a)
+                    .concat(ADD(WORD(h, 1), b))
+                    .concat(ADD(WORD(h, 2), c))
+                    .concat(ADD(WORD(h, 3), d))
+                    .concat(ADD(WORD(h, 4), e))
+                    .concat(ADD(WORD(h, 5), f))
+                    .concat(ADD(WORD(h, 6), g))
+                    .concat(ADD(WORD(h, 7), j));
             }
 
-            return depth == 0 ? genHash() : compress(depth - 1, maxDepth, w, binary.ADD(genTemp1(), genTemp2()), a,
-                b, c, binary.ADD(d, genTemp1()), e, f, g);
+            return depth == 0 ? genHash() : compress(depth - 1, maxDepth, w, ADD(genTemp1(), genTemp2()), a,
+                b, c, ADD(d, genTemp1()), e, f, g);
         }
 
         return msg.length == 0 ? h : iter(msg.slice(512), compress(64, 64, schedule(48, msg.slice(0, 512)),
