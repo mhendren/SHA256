@@ -43,11 +43,11 @@ describe('binary', function () {
     });
 
     describe('ROR', function () {
-        it('should make 10101, 1 be 11010', function () {
-            expect(binary.ROR([1, 0, 1, 0, 1])).to.deep.equal([1, 1, 0, 1, 0]);
-        });
         it('should make 100100100, 2 be 001001001', function () {
             expect(binary.ROR([1, 0, 0, 1, 0, 0, 1, 0, 0], 2)).to.deep.equal([0, 0, 1, 0, 0, 1, 0, 0, 1]);
+        });
+        it('should curry', function() {
+            expect(binary.ROR([1, 0, 0, 1, 0, 0, 1, 0, 0])(2)).to.deep.equal([0, 0, 1, 0, 0, 1, 0, 0, 1]);
         });
     });
 
@@ -61,32 +61,62 @@ describe('binary', function () {
         it('should get 000101001 for 101001010, 3', function() {
             expect(binary.SHR([1, 0, 1, 0, 0, 1, 0, 1, 0], 3)).to.deep.equal([0, 0, 0, 1, 0, 1, 0, 0, 1]);
         });
+        it('should curry', function() {
+            expect(binary.SHR([1, 0, 1, 0, 0, 1, 0, 1, 0])(3)).to.deep.equal([0, 0, 0, 1, 0, 1, 0, 0, 1]);
+        })
     });
 
     describe('AND', function () {
+        it('should throw an exception if arrays are different lengths', function() {
+            function badAND() {
+                return binary.AND([0, 1, 0, 1], [1, 1, 0]);
+            }
+            expect(badAND).to.throw('cannot do binary math on arrays of differing lengths');
+        });
         it('should get 1001 with 1101 AND 1011', function () {
             expect(binary.AND([1, 1, 0, 1], [1, 0, 1, 1])).to.deep.equal([1, 0, 0, 1]);
         });
         it('should get 0000 with 1001 AND 0110', function () {
             expect(binary.AND([1, 0, 0, 1], [0, 1, 1, 0])).to.deep.equal([0, 0, 0, 0]);
         });
+        it('should curry', function() {
+            expect(binary.AND([1, 0, 0, 1])([0, 1, 1, 0])).to.deep.equal([0, 0, 0, 0]);
+        });
     });
 
     describe('OR', function () {
+        it('should throw an exception if arrays are different lengths', function() {
+            function badOR() {
+                return binary.OR([0, 1, 0, 1], [1, 1, 0]);
+            }
+            expect(badOR).to.throw('cannot do binary math on arrays of differing lengths');
+        });
         it('should get 1011 with 1001 OR 0011', function () {
             expect(binary.OR([1, 0, 0, 1], [0, 0, 1, 1])).to.deep.equal([1, 0, 1, 1]);
         });
         it('should get 1111 with 1001 OR 0110', function () {
             expect(binary.OR([1, 0, 0, 1], [0, 1, 1, 0])).to.deep.equal([1, 1, 1, 1]);
         });
+        it('should curry', function() {
+           expect(binary.OR([1, 0, 0, 1])([0, 1, 1, 0])).to.deep.equal([1, 1, 1, 1]);
+        });
     });
 
     describe('XOR', function() {
+        it('should throw an exception if arrays are different lengths', function() {
+            function badXOR() {
+                return binary.XOR([0, 1, 0, 1], [1, 1, 0]);
+            }
+            expect(badXOR).to.throw('cannot do binary math on arrays of differing lengths');
+        });
         it('should get 1010 for 1100 XOR 0110', function() {
             expect(binary.XOR([1, 1, 0, 0], [0, 1, 1, 0])).to.deep.equal([1, 0, 1, 0]);
         });
         it('should get 0010 for 1001 XOR 1011', function() {
             expect(binary.XOR([1, 0, 0, 1], [1, 0, 1, 1])).to.deep.equal([0, 0, 1, 0]);
+        });
+        it('should curry', function() {
+            expect(binary.XOR([1, 0, 0, 1])([1, 0, 1, 1])).to.deep.equal([0, 0, 1, 0]);
         });
     });
 
@@ -105,7 +135,11 @@ describe('binary', function () {
             function badADD() {
                 binary.ADD([1, 1, 0, 1, 0], [0, 0, 1, 0]);
             }
-            expect(badADD).to.throw('binary arrays are not the same length (5, 4)');
+            expect(badADD).to.throw('cannot do binary math on arrays of differing lengths');
+        });
+        it('should curry', function() {
+            expect(binary.ADD([0, 1, 1, 0, 0, 1, 0, 0])([0, 0, 1, 1, 0, 0, 1, 0]))
+                .to.deep.equal([1, 0, 0, 1, 0, 1, 1, 0]);
         });
     });
 
@@ -118,6 +152,9 @@ describe('binary', function () {
         });
         it('should get 10101 for 01010', function() {
             expect(binary.NOT([0, 1, 0, 1, 0])).to.deep.equal([1, 0, 1, 0, 1]);
+        });
+        it('should curry', function() {
+            expect(binary.NOT()([0, 1, 0, 1, 0])).to.deep.equal([1, 0, 1, 0, 1]);
         });
     });
 
@@ -149,6 +186,9 @@ describe('binary', function () {
                 binary.WORD(base, 4);
             }
             expect(badWORD).to.throw('data is not large enough to contain word 4 (133)');
+        });
+        it('should curry', function() {
+            expect(binary.WORD(base)(3)).to.deep.equal([0, 0, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0]);
         });
     });
 });

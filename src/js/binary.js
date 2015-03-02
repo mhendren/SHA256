@@ -2,6 +2,9 @@
  * Created by mhendren on 2/26/15.
  */
 var map = require('./map');
+function mathValidator(ba1, ba2) {
+    if (ba1.length != ba2.length) throw new Error('cannot do binary math on arrays of differing lengths');
+}
 module.exports = {
     fractionalToBinaryString: function (value) {
         function iter(val, divisor, depth, out) {
@@ -47,79 +50,104 @@ module.exports = {
     },
 
     ROR: function (value, amount) {
-        function iter(val, amt) {
-            var len = value.length - 1;
-            return amt == 0 ? val : iter([val[len]].concat(val.slice(0, len)), amt - 1);
-        }
+        function doROR(amt0) {
+            function iter(val, amt) {
+                var pos = value.length - 1;
+                return amt == 0 ? val : iter([val[pos]].concat(val.slice(0, pos)), amt - 1);
+            }
 
-        return iter(value, typeof amount === "undefined" ? 1 : amount);
+            return iter(value, amt0);
+        }
+        return typeof amount === "undefined" ? doROR : doROR(amount);
     },
 
     SHR: function(ba, amount) {
-        function iter(b, depth, out) {
-            return depth <= 0 ? out : iter(b.slice(1), depth - 1, out.concat(b[0]));
+        function doSHR(amt) {
+            function iter(b, depth, out) {
+                return depth <= 0 ? out : iter(b.slice(1), depth - 1, out.concat(b[0]));
+            }
+
+            return iter(ba, ba.length - amt, map(function () {
+                return 0;
+            })(new Array(amt < ba.length ? amt : ba.length)));
         }
-        return iter(ba, ba.length - amount, map(function() { return 0; })(new Array(amount < ba.length ? amount : ba.length)));
+        return typeof amount === "undefined" ? doSHR : doSHR(amount);
     },
 
     AND: function (ba1, ba2) {
-        function iter(val, depth) {
-            var pos = ba1.length - depth;
-            return depth == 0 ? val : iter(val.concat(ba1[pos] == 1 && ba2[pos] == 1 ? 1 : 0), depth - 1)
+        function doAND(baTarget) {
+            mathValidator(ba1, baTarget);
+            function iter(val1, val2, out) {
+                return val1.length == 0 ? out : iter(val1.slice(1), val2.slice(1), out.concat(val1[0] == 1 && val2[0] == 1 ? 1 : 0));
+            }
+            return iter(ba1, baTarget, []);
         }
 
-        return iter([], ba1.length);
+        return typeof ba2 === "undefined" ? doAND : doAND(ba2);
     },
 
     OR: function (ba1, ba2) {
-        function iter(val, depth) {
-            var pos = ba1.length - depth;
-            return depth == 0 ? val : iter(val.concat(ba1[pos] == 1 || ba2[pos] == 1 ? 1 : 0), depth - 1)
+        function doOR(baTarget) {
+            mathValidator(ba1, baTarget);
+            function iter(val1, val2, out) {
+                return val1.length == 0 ? out : iter(val1.slice(1), val2.slice(1), out.concat(val1[0] == 1 || val2[0] == 1 ? 1 : 0));
+            }
+            return iter(ba1, baTarget, []);
         }
 
-        return iter([], ba1.length);
+        return typeof ba2 === "undefined" ? doOR : doOR(ba2);
     },
 
     XOR: function (ba1, ba2) {
-        function iter(val, depth) {
-            var pos = ba1.length - depth;
-            return depth == 0 ? val :
-                iter(val.concat((ba1[pos] == 1 && ba2[pos] == 0) ||
-                (ba1[pos] == 0 && ba2[pos] == 1) ? 1 : 0), depth - 1)
+        function doXOR(baTarget) {
+            mathValidator(ba1, baTarget);
+            function iter(val1, val2, out) {
+                return val1.length == 0 ? out : iter(val1.slice(1), val2.slice(1),
+                    out.concat((val1[0] == 1 && val2[0] == 0) || (val1[0] == 0 && val2[0] == 1) ? 1 : 0));
+            }
+            return iter(ba1, baTarget, []);
         }
 
-        return iter([], ba1.length);
+        return typeof ba2 === "undefined" ? doXOR : doXOR(ba2);
     },
 
     ADD: function (ba1, ba2) {
-        if (ba1.length != ba2.length)
-            throw new Error('binary arrays are not the same length (' + ba1.length + ', ' + ba2.length + ')');
-        function iter(depth, carry, out) {
-            function bit(b0, b1, c) {
-                var on = ((b0 && !b1) || (!b0 && b1)) ? 1 : 0;
-                return ((on && !c) || (!on && c)) ? 1 : 0;
+        function doADD(baTarget) {
+            mathValidator(ba1, baTarget);
+            function iter(val1, val2, carry, out) {
+                function bit(b0, b1, c) {
+                    var on = ((b0 && !b1) || (!b0 && b1)) ? 1 : 0;
+                    return ((on && !c) || (!on && c)) ? 1 : 0;
+                }
+                function carr(b0, b1, c) {
+                    return ((b0 && b1) || (b0 && c) || (b1 && c)) ? 1 : 0;
+                }
+                var p = val1.length - 1;
+                return val1.length == 0 ? out : iter(val1.slice(0, p), val2.slice(0, p), carr(val1[p], val2[p], carry),
+                    [bit(val1[p], val2[p], carry)].concat(out));
             }
-            function carr(b0, b1, c) {
-                return ((b0 && b1) || (b0 && c) || (b1 && c)) ? 1 : 0;
-            }
-            var pos = depth - 1;
-            return depth == 0 ? out : iter(depth - 1, carr(ba1[pos], ba2[pos], carry),
-                [bit(ba1[pos], ba2[pos], carry)].concat(out));
+            return iter(ba1, baTarget, 0, []);
         }
-        return iter(ba1.length, 0, []);
+        return typeof ba2 === "undefined" ? doADD : doADD(ba2);
     },
 
     NOT: function(ba) {
-        function iter(depth, out) {
-            return depth == 0 ? out : iter(depth - 1, out.concat(ba[ba.length - depth] == 1 ? 0 : 1));
+        function doNOT(baTarget) {
+            function iter(val, out) {
+                return val.length == 0 ? out : iter(val.slice(1), out.concat(val[0] == 1 ? 0 : 1));
+            }
+            return iter(baTarget, [])
         }
-        return iter(ba.length, []);
+        return typeof ba === "undefined" ? doNOT : doNOT(ba);
     },
 
     WORD: function(base, pos) {
-        var start = pos * 32;
-        var end = start + 32;
-        if (end > base.length) throw new Error('data is not large enough to contain word ' + pos + ' (' + base.length + ')');
-        return base.slice(start, end);
+        function doWORD(position) {
+            var start = position * 32;
+            var end = start + 32;
+            if (end > base.length) throw new Error('data is not large enough to contain word ' + position + ' (' + base.length + ')');
+            return base.slice(start, end);
+        }
+        return typeof pos === "undefined" ? doWORD : doWORD(pos);
     }
 };
