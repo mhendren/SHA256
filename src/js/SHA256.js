@@ -2,6 +2,7 @@
  * Created by mhendren on 2/27/2015.
  */
 var map = require('./map');
+var compose = require('./compose');
 var binary = require('./binary');
 var PrimeNumberGenerator = require('./PrimeNumberGenerator');
 var RootFinders = require('./RootFinders');
@@ -9,8 +10,8 @@ var RootFinders = require('./RootFinders');
 module.exports = function(message) {
     if (message.length % 512) throw new Error('Message must be evenly divisible by 512 bits (' + message.length + ')');
 
-    var h0 = map(map(map(map(PrimeNumberGenerator(8), RootFinders.sqroot), binary.fractionalToBinaryString), binary.binaryStringToHex), binary.hexToBinary);
-    var k = map(map(map(map(PrimeNumberGenerator(64), RootFinders.cuberoot), binary.fractionalToBinaryString), binary.binaryStringToHex), binary.hexToBinary);
+    var h0 = map(compose(RootFinders.sqroot, binary.fractionalToBinaryString, binary.binaryStringToHex, binary.hexToBinary))(PrimeNumberGenerator(8));
+    var k = map(compose(RootFinders.cuberoot, binary.fractionalToBinaryString, binary.binaryStringToHex, binary.hexToBinary))(PrimeNumberGenerator(64));
 
     function iter(msg, h) {
         function schedule(depth, wi) {

@@ -7,13 +7,12 @@ function Message(message) {
     function zeroPad(n, w) {
         return n.length >= w ? n : new Array(w - n.length + 1).join('0') + n;
     }
+    function textToBit(x) { return x == "1" ? 1 : 0; }
 
     function toBinary() {
         function iter(msg, out) {
             function toBitArray(charCode) {
-                return map(zeroPad(charCode.toString(2), "00000000".length).split(''), function (x) {
-                    return x == "1" ? 1 : 0;
-                });
+                return map(textToBit)(zeroPad(charCode.toString(2), "00000000".length).split(''));
             }
 
             return msg.length == 0 ? out : iter(msg.slice(1), out.concat(toBitArray(msg.charCodeAt(0))));
@@ -32,11 +31,8 @@ function Message(message) {
 
     function appendLength(msg, len) {
         function toBitArray(len) {
-            return map(zeroPad(len.toString(2),
-                    "0000000000000000000000000000000000000000000000000000000000000000".length).split(''),
-                function (x) {
-                    return x == "1" ? 1 : 0;
-                });
+            return map(textToBit)(zeroPad(len.toString(2),
+                    "0000000000000000000000000000000000000000000000000000000000000000".length).split(''));
         }
         return msg.concat(toBitArray(len));
     }

@@ -30,9 +30,7 @@ module.exports = {
 
             var binNumber = "0123456789abcdef".search(val[0]).toString(2);
             return pos == 0 ? current :
-                iter(val.substr(1), pos - 1, current.concat(map(zpad(binNumber).split(''), function (x) {
-                    return x == "1" ? 1 : 0
-                })));
+                iter(val.substr(1), pos - 1, current.concat(map(function(x) { return x == "1" ? 1 : 0 })(zpad(binNumber).split(''))));
         }
 
         return iter(value, value.length, []);
@@ -61,7 +59,7 @@ module.exports = {
         function iter(b, depth, out) {
             return depth <= 0 ? out : iter(b.slice(1), depth - 1, out.concat(b[0]));
         }
-        return iter(ba, ba.length - amount, map(new Array(amount < ba.length ? amount : ba.length), function() { return 0;}));
+        return iter(ba, ba.length - amount, map(function() { return 0; })(new Array(amount < ba.length ? amount : ba.length)));
     },
 
     AND: function (ba1, ba2) {
