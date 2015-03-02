@@ -4,6 +4,9 @@
 var map = require('./map');
 var compose = require('./compose');
 var binary = require('./binary');
+var fractionalToBinaryString = binary.fractionalToBinaryString;
+var binaryStringToHex = binary.binaryStringToHex;
+var hexToBinary = binary.hexToBinary;
 var AND = binary.AND;
 var ADD = binary.ADD;
 var ROR = binary.ROR;
@@ -13,12 +16,14 @@ var NOT = binary.NOT;
 var WORD = binary.WORD;
 var PrimeNumberGenerator = require('./PrimeNumberGenerator');
 var RootFinders = require('./RootFinders');
+var sqrt = RootFinders.sqroot;
+var cbrt = RootFinders.cuberoot;
 
 module.exports = function(message) {
     if (message.length % 512) throw new Error('Message must be evenly divisible by 512 bits (' + message.length + ')');
 
-    var h0 = map(compose(RootFinders.sqroot, binary.fractionalToBinaryString, binary.binaryStringToHex, binary.hexToBinary))(PrimeNumberGenerator(8));
-    var k = map(compose(RootFinders.cuberoot, binary.fractionalToBinaryString, binary.binaryStringToHex, binary.hexToBinary))(PrimeNumberGenerator(64));
+    var h0 = map(compose(sqrt, fractionalToBinaryString, binaryStringToHex, hexToBinary))(PrimeNumberGenerator(8));
+    var k = map(compose(cbrt, fractionalToBinaryString, binaryStringToHex, hexToBinary))(PrimeNumberGenerator(64));
 
     function iter(msg, h) {
         function schedule(depth, wi) {

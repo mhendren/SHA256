@@ -14,15 +14,16 @@ module.exports = function(fn, fnprime, maxIter, tol) {
     var f = fn, fprime = fnprime;
 
     var newtonMethod = function (x0, depth) {
+        function abs(x) { return x < 0 ? -x : x; }
         var newtonIteration = function (x0) {
             return x0 - (f(x0) / fprime(x0));
         };
 
         if (depth > maxIterations) {
-            throw new Error('Maximum iterations encouters, last best guess: ' + x0);
+            throw new Error('Maximum iterations encountered, last best guess: ' + x0);
         }
         var x1 = newtonIteration(x0);
-        if (Math.abs(x1 - x0) / Math.abs(x1) < tolerance) {
+        if (abs(x1 - x0) / abs(x1) < tolerance) {
             return x1;
         }
         return newtonMethod(x1, depth + 1);

@@ -12,7 +12,7 @@ module.exports = {
             return depth == 32 ? out : iter(vmd >= 0 ? vmd : val, divisor * 2, depth + 1, out + (vmd >= 0 ? 1 : 0));
         }
 
-        return iter(value - Math.floor(value), 2, 0, "");
+        return iter(value - parseInt(value.toString().split('.')[0]), 2, 0, "");
     },
 
     binaryStringToHex: function (binaryString) {
