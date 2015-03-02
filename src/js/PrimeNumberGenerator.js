@@ -4,21 +4,16 @@
 module.exports = function(max) {
     function PNG(base, previous) {
         function getNext() {
-            function iter(n) {
-                function gcd(a, b) {
-                    return a == b ? a : a > b ? gcd(a - b, b) : gcd(a, b - a);
-                }
-
-                var check = base + n;
-                for (var i in previous) {
-                    if (gcd(previous[i], check) != 1) {
-                        return iter(n + 1);
-                    }
-                }
-                return check;
+            function gcd(a, b) {
+                return a == b ? a : a > b ? gcd(a - b, b) : gcd(a, b - a);
             }
 
-            return iter(1);
+            function findNext(primeSet, check) {
+                return primeSet.length == 0 ? check : gcd(primeSet[0], check) == 1 ?
+                    findNext(primeSet.slice(1), check) : findNext(previous, check + 1);
+            }
+
+            return findNext(previous, base);
         }
 
         function next() {
@@ -41,5 +36,5 @@ module.exports = function(max) {
         };
     }
     if (max < 1) return [];
-    return new PNG(1, []).advance(max - 1).list();
+    return new PNG(2, []).advance(max - 1).list();
 };
