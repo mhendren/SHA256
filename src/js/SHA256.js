@@ -22,8 +22,9 @@ var cbrt = RootFinders.cuberoot;
 module.exports = function(message) {
     if (message.length % 512) throw new Error('Message must be evenly divisible by 512 bits (' + message.length + ')');
 
-    var h0 = map(compose(sqrt, fractionalToBinaryString, binaryStringToHex, hexToBinary))(PrimeNumberGenerator(8));
-    var k = map(compose(cbrt, fractionalToBinaryString, binaryStringToHex, hexToBinary))(PrimeNumberGenerator(64));
+    var fractionsToBinary = compose(fractionalToBinaryString, binaryStringToHex, hexToBinary);
+    var h0 = map(compose(sqrt, fractionsToBinary))(PrimeNumberGenerator(8));
+    var k = map(compose(cbrt, fractionsToBinary))(PrimeNumberGenerator(64));
 
     function iter(msg, h) {
         function schedule(depth, wi) {
