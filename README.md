@@ -16,6 +16,10 @@ Overall, the readability has been pretty good.
 I use the computer in the most abstract sense because I split everything out into arrays of 1's and 0's (literally).
 So I cannot even use basic integer handling routines in the calculation.
 
+Now, while I didn't use any libraries in the application, I did use gulp/mocha/chai for building and testing it.
+This is because the application itself is independent, but I didn't feel like writing my own test framework and build
+system. Maybe next time.
+
 <H3>How Do I Use This</H3>
 
 Are you insane? Why would you use this? There are perfectly valid practical libraries for JavaScript that do this
