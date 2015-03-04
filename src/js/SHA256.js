@@ -18,6 +18,8 @@ var PrimeNumberGenerator = require('./PrimeNumberGenerator');
 var RootFinders = require('./RootFinders');
 var sqrt = RootFinders.sqroot;
 var cbrt = RootFinders.cuberoot;
+var apply = require('./apply');
+var cconcat = require('./cconcat');
 
 module.exports = function(message) {
     if (message.length % 512) throw new Error('Message must be evenly divisible by 512 bits (' + message.length + ')');
@@ -36,7 +38,7 @@ module.exports = function(message) {
 
             var s0 = sCompute(WORD(wi)(n+1), 7, 18, 3);
             var s1 = sCompute(WORD(wi)(n+14), 17, 19, 10);
-            return depth == 0 ? wi : schedule(depth - 1, wi.concat(compose(ADD(WORD(wi)(n)),ADD(s0),ADD(s1))(WORD(wi)(n+9))));
+            return depth == 0 ? wi : schedule(depth - 1, wi.concat(apply(ADD, WORD(wi)(n), s0, s1, WORD(wi)(n+9))));
         }
 
         function compress(depth, maxDepth, w, a, b, c, d, e, f, g, j) {
@@ -44,30 +46,24 @@ module.exports = function(message) {
             var pos = maxDepth - depth;
 
             function sCompute(v, s1, s2, s3) {
-                return compose(XOR(ROR(v)(s1)), XOR(ROR(v)(s2)))(ROR(v)(s3));
+                return apply(XOR, ROR(v)(s1), ROR(v)(s2), ROR(v)(s3));
             }
 
             function genTemp1() {
                 var s1 = sCompute(e, 6, 11, 25);
                 var ch = XOR(AND(e)(f))(AND(NOT(e))(g));
-                return compose(ADD(j),ADD(s1),ADD(ch),ADD(WORD(k)(pos)))(WORD(w)(pos));
+                return apply(ADD, j, s1, ch, WORD(k)(pos), WORD(w)(pos));
             }
 
             function genTemp2() {
                 var s0 = sCompute(a, 2, 13, 22);
-                var maj = compose(XOR(AND(a)(b)), XOR(AND(a)(c)))(AND(b)(c));
+                var maj = apply(XOR, AND(a)(b), AND(a)(c), AND(b)(c));
                 return ADD(s0)(maj);
             }
 
             function genHash() {
-                return ADD(WORD(h)(0))(a)
-                    .concat(ADD(WORD(h)(1))(b))
-                    .concat(ADD(WORD(h)(2))(c))
-                    .concat(ADD(WORD(h)(3))(d))
-                    .concat(ADD(WORD(h)(4))(e))
-                    .concat(ADD(WORD(h)(5))(f))
-                    .concat(ADD(WORD(h)(6))(g))
-                    .concat(ADD(WORD(h)(7))(j));
+                return apply(cconcat, ADD(WORD(h)(0))(a), ADD(WORD(h)(1))(b), ADD(WORD(h)(2))(c), ADD(WORD(h)(3))(d),
+                    ADD(WORD(h)(4))(e), ADD(WORD(h)(5))(f), ADD(WORD(h)(6))(g), ADD(WORD(h)(7))(j));
             }
 
             return depth == 0 ? genHash() : compress(depth - 1, maxDepth, w, ADD(genTemp1())(genTemp2()), a,
