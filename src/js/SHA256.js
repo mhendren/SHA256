@@ -36,7 +36,7 @@ module.exports = function(message) {
 
             var s0 = sCompute(WORD(wi)(n+1), 7, 18, 3);
             var s1 = sCompute(WORD(wi)(n+14), 17, 19, 10);
-            return depth == 0 ? wi : schedule(depth - 1, wi.concat(ADD(ADD(ADD(WORD(wi)(n))(s0))(WORD(wi)(n + 9)))(s1)));
+            return depth == 0 ? wi : schedule(depth - 1, wi.concat(compose(ADD(WORD(wi)(n)),ADD(s0),ADD(s1))(WORD(wi)(n+9))));
         }
 
         function compress(depth, maxDepth, w, a, b, c, d, e, f, g, j) {
