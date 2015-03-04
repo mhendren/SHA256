@@ -10,8 +10,9 @@ Instead, I have decided to calculate them. Then they are made up of the fraction
 of the first n primes. Clearly, I could not use the Math library's square root function to do the calculation. So
 I had to write my own square root function (and prime number generator to boot).
 
-This has been written in a functional syntax. Currying has been used even where it makes things less readable.
-Overall, the readability has been pretty good.
+This has been written in a functional syntax. Currying was being used even where it makes things less readable, this
+lead me to find several areas where there was common code that did not appear common. I simplified those pieces,
+and removed the currying where it was no longer making any sense. Overall, the readability has been pretty good.
 
 I use the computer in the most abstract sense because I split everything out into arrays of 1's and 0's (literally).
 So I cannot even use basic integer handling routines in the calculation.
