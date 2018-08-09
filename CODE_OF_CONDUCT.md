@@ -4,7 +4,7 @@
 <P>If you are not me then your behavior is completely unacceptable, and no code changes
 will be merged into my code.</P>
 
-<H3>What We expect out of forks</P>
+<H3>What We expect out of forks</H3>
 <P>Be you.</P>
 <P>That fork is your code now, do what you want with it.</P>
 
